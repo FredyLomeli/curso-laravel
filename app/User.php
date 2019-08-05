@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Profession;
 
 class User extends Authenticatable
 {
@@ -26,4 +27,21 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected $casts = [
+        'is_admin' => 'boolean'
+    ];
+
+    public static function findByEmail($email){
+        // El fasa static se usa cuando se quiere llamar al modelo en el que nos encontramos
+        return static::where(compact('email'))->first();
+    }
+
+    public function isAdmin(){
+        return $this->email === 'ing.lomeli@gmail.com';
+    }
+
+    public function profession(){
+        return $this->belongsTo(Profession::class);
+    }
 }
