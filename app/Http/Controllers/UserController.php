@@ -23,6 +23,21 @@ class UserController extends Controller
 
     public function create(){
         $title = "Nuevo usuario";
-        return view('users.new',compact('title'));
+        return view('users.create',compact('title'));
+    }
+
+    public function store(){
+        $data = request()->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required',
+        ]);
+        User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+        ]);
+
+        return redirect()->route('users.index');
     }
 }

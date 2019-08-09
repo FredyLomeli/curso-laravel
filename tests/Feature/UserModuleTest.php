@@ -10,6 +10,7 @@ use App\User;
 class UserModuleTest extends TestCase
 {
     use RefreshDatabase;
+
     /** @test */
     function it_loads_the_user_list_page(){
         factory(User::class)->create([
@@ -56,5 +57,38 @@ class UserModuleTest extends TestCase
         $this->get('/usuario/nuevo')
         ->assertStatus(200)
         ->assertSee('Crear nuevo usuario');
+    }
+    /** @test */
+    function it_create_a_new_user(){
+        $this->post(route('user.store'),[
+            'name' => 'Jose Alfredo Jimenez',
+            'email' => 'jose.jimenez@frexal.net',
+            'password' => '12345',
+        ])->assertRedirect(route('users.index'));
+
+        $this->assertCredentials([
+            'name' => 'Jose Alfredo Jimenez',
+            'email' => 'jose.jimenez@frexal.net',
+            'password' => '12345',
+        ]);
+
+        // $this->assertDatabaseHas('users',[
+        //     'name' => 'Jose Alfredo Jimenez',
+        //     'email' => 'jose.jimenez@frexal.net',
+        //     // 'password' => '12345',
+        // ]);
+    }
+    /** @test */
+    function the_name_id_required(){
+        $this->post(route('user.store'), [
+            'name' => '',
+            'email' => 'ing.lomeli@gmail.com',
+            'password'=> '123456',
+        ])->assertStatus(route('user.create'))
+            ->assertSessioHasErrors(['name' => 'El campo nombre es obligatorio']);
+        
+        $this->assertDatabaseMissing('users',[
+            'email' => 'ing.lomeli@gmail.com',
+        ]);
     }
 }
