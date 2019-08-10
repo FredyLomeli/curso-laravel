@@ -24,5 +24,13 @@ Route::get('/usuario/nuevo', 'UserController@create')->name('user.create');
 
 Route::post('/usuario/crear', 'UserController@store')->name('user.store');
 
+Route::get('/usuario/{user}/editar', 'UserController@edit')
+    ->where('user', '[0-9]+')->name('user.edit');
 
+Route::put('/usuario/{user}/update', 'UserController@update')
+    ->where('user', '[0-9]+')->name('user.update');
+
+Route::delete('/usuario/{user}/delete', 'UserController@destroy')
+    ->where('user', '[0-9]+')->name('user.destroy');
+    
 Route::get('/saludo/{name}/{nickname?}', 'WelcomeUserController@index');
